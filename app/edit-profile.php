@@ -87,8 +87,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Update or insert contact details
         $stmt = $pdo->prepare(
             "INSERT INTO Contact (user_id, email, phone_number, website, other_info)
-            VALUES (?, ?, ?, ?, ?)
-            ON DUPLICATE KEY UPDATE 
+             VALUES (?, ?, ?, ?, ?)
+             ON DUPLICATE KEY UPDATE 
                 email = VALUES(email), 
                 phone_number = VALUES(phone_number), 
                 website = VALUES(website), 
@@ -104,3 +104,88 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile</title>
+    <link href="../theme/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../theme/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+    <link href="../theme/css/main.css" rel="stylesheet">
+    <style>
+        .form-container {
+            max-width: 600px;
+            margin: auto;
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .btn-success {
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <?php include '../lib/header.php'; ?>
+
+    <main class="container mt-5">
+        <div class="form-container">
+            <!-- Dynamic Header -->
+            <h1 class="form-header">
+                <?= $isOwner ? "Edit Your Profile" : "Editing " . htmlspecialchars($userDetails['display_name']) . "'s Profile" ?>
+            </h1>
+            <?php if ($message): ?>
+                <div class="alert alert-info"><?= htmlspecialchars($message) ?></div>
+            <?php endif; ?>
+            <form method="POST">
+                <!-- User Information -->
+                <div class="mb-3">
+                    <label for="display_name" class="form-label">Display Name</label>
+                    <input type="text" name="display_name" id="display_name" class="form-control"
+                        value="<?= htmlspecialchars($userDetails['display_name']) ?>" required>
+                </div>
+                <div class="mb-3">
+                    <label for="bio" class="form-label">Bio</label>
+                    <textarea name="bio" id="bio" class="form-control"
+                        rows="4"><?= htmlspecialchars($userDetails['bio']) ?></textarea>
+                </div>
+
+                <!-- Contact Information -->
+                <h2 class="form-header">Contact Information</h2>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" name="email" id="email" class="form-control"
+                        value="<?= htmlspecialchars($contactDetails['email']) ?>">
+                </div>
+                <div class="mb-3">
+                    <label for="phone_number" class="form-label">Phone Number</label>
+                    <input type="text" name="phone_number" id="phone_number" class="form-control"
+                        value="<?= htmlspecialchars($contactDetails['phone_number']) ?>">
+                </div>
+                <div class="mb-3">
+                    <label for="website" class="form-label">Website</label>
+                    <input type="url" name="website" id="website" class="form-control"
+                        value="<?= htmlspecialchars($contactDetails['website']) ?>">
+                </div>
+                <div class="mb-3">
+                    <label for="other_info" class="form-label">Other Info</label>
+                    <textarea name="other_info" id="other_info" class="form-control"
+                        rows="4"><?= htmlspecialchars($contactDetails['other_info']) ?></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-success">Save Changes</button>
+            </form>
+        </div>
+    </main>
+
+    <?php include '../lib/footer.php'; ?>
+    <script src="../theme/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
